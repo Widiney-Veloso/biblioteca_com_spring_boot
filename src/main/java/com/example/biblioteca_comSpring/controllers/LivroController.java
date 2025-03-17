@@ -12,7 +12,6 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/livros")
-@CrossOrigin(origins = "http://localhost:5173") // Permite requisições do frontend
 public class LivroController {
     private final LivroRepository livroRepository;
 
@@ -23,7 +22,7 @@ public class LivroController {
     
     @PostMapping("/adicionar")
     public ResponseEntity<String> adicionarLivro(@RequestBody Livro livro) {
-        livro.setDisponivel(true); // Sempre inicia como disponível
+        livro.setDisponivel(true); 
         livroRepository.save(livro);
         return ResponseEntity.ok("Livro cadastrado com sucesso!");
     }
@@ -36,12 +35,11 @@ public class LivroController {
 
     @GetMapping("/buscar")
     public ResponseEntity<Livro> buscarLivroPorTitulo(@RequestParam("titulo") String titulo) {
-        // Validação básica do título
+
         if (titulo == null || titulo.trim().isEmpty()) {
             return ResponseEntity.badRequest().body(null);
         }
 
-        // Busca o livro pelo título
         Livro livro = livroRepository.buscarPorTitulo(titulo);
 
         // Verifica se o livro foi encontrado
@@ -54,20 +52,16 @@ public class LivroController {
 
     @DeleteMapping("/remover")
     public ResponseEntity<String> removerLivro(@RequestParam("titulo") String titulo) {
-        // Validação básica do título
         if (titulo == null || titulo.trim().isEmpty()) {
             return ResponseEntity.badRequest().body("O título do livro não pode ser vazio!");
         }
 
-        // Busca o livro pelo título
         Optional<Livro> livro = livroRepository.findByTitulo(titulo);
 
-        // Verifica se o livro existe
         if (livro.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Livro não encontrado!");
         }
 
-        // Remove o livro
         livroRepository.delete(livro.get());
         return ResponseEntity.ok("Livro removido com sucesso!");
     }
