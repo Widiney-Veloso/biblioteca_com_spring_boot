@@ -27,11 +27,11 @@ public class Emprestimo {
     private Long idEmprestimo;
 
     @ManyToOne
-    @JoinColumn(name = "id_usuario", nullable = false)
+    @JoinColumn(name = "id_usuario")
     private Usuario usuario;
 
     @ManyToOne
-    @JoinColumn(name = "id_livro", nullable = false)
+    @JoinColumn(name = "id_livro")
     private Livro livro;
 
     @Column(nullable = false)
