@@ -66,17 +66,21 @@ public class EmprestimoController {
         Emprestimo emprestimo = emprestimoOpt.get();
         LocalDateTime agora = LocalDateTime.now();
         long minutosAtraso = ChronoUnit.MINUTES.between(emprestimo.getDataDevolucao(), agora);
-
+        
+        double multa = 0.0;
         if (minutosAtraso > 0) {
-            double multa = 5.0 + Math.ceil(minutosAtraso / 10.0) * 8.0;
-            return "Atraso de " + minutosAtraso + " minutos. Multa de R$ " + multa + ". PIX: 000.000.000-12";
+            multa = 5.0 + Math.ceil(minutosAtraso / 10.0) * 8.0;
         }
-
+        
         Livro livro = emprestimo.getLivro();
         livro.setDisponivel(true);
         livroRepository.save(livro);
         emprestimoRepository.delete(emprestimo);
-
-        return "Livro devolvido com sucesso!";
-    }
+        
+        if (multa > 0) {
+            return "Atraso de " + minutosAtraso + " minutos. Multa de R$ " + multa + ". PIX: 000.000.000-12. Livro devolvido com sucesso!";
+        } else {
+            return "Livro devolvido com sucesso!";
+        }
+    }        
 }
